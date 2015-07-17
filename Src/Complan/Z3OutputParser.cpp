@@ -9,7 +9,7 @@
 using namespace std;
 
 
-double extractTrajectoryCostInformation()
+double ExtractTrajectoryCostInformation()
 {
   ifstream ifp;
   int location;
@@ -48,7 +48,7 @@ double extractTrajectoryCostInformation()
 }
 
 
-void extractTrajectoryVelocityInformation(string filename, vector< vector<int> > & velocities)
+void ExtractTrajectoryVelocityInformation(string filename, vector< vector<int> > & velocities)
 {
   ifstream ifp;
   int location;
@@ -108,7 +108,7 @@ void extractTrajectoryVelocityInformation(string filename, vector< vector<int> >
 }
 
 
-void extractTrajectoryPositionXInformation(string filename, vector< vector<int> > &X)
+bool ExtractTrajectoryRobotPositionXInformation(string filename, vector< vector<int> > &X)
 {
   ifstream ifp;
   int location;
@@ -152,23 +152,24 @@ void extractTrajectoryPositionXInformation(string filename, vector< vector<int> 
           }
           else
           {
-            cout << "parsing error 3.." << endl;
-            exit(0);
+            cout << "Complan Error : parsing error 3.." << endl;
+			return false;
           }
         }
       }
       else
       {
-        cout << "parsing error 1.." << endl;
-        exit(0);
+        cout << "Complan Error: parsing error 1.." << endl;
+		return false;
       }
     }
   }
   ifp.close();
+  return true;
 }
 
 
-void extractTrajectoryPositionYInformation(string filename, vector< vector<int> > &Y)
+bool ExtractTrajectoryRobotPositionYInformation(string filename, vector< vector<int> > &Y)
 {
   ifstream ifp;
   int location;
@@ -212,17 +213,18 @@ void extractTrajectoryPositionYInformation(string filename, vector< vector<int> 
           }
           else
           {
-            cout << "parsing error 3.." << endl;
-            exit(0);
+            cout << "Complan error : parsing error 3.." << endl;
+			return false;
           }
         }
       }
       else
       {
-        cout << "parsing error 1.." << endl;
-        exit(0);
+        cout << "Complan Error: parsing error 1.." << endl;
+		return false;
       }
     }
   }
   ifp.close();
+  return true;
 }

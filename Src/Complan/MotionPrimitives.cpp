@@ -1,6 +1,15 @@
+/*
+File: MotionPrimitives.cpp
+Authors:
+Indranil Saha (isaha@cse.iitk.ac.in)
+Ankush Desai(ankush@eecs.berkeley.edu)
+
+This file defines data types for storing the robot state, position and motion primitive information.
+*/
+
 #include "MotionPrimitives.h"
 
-Primitive::Primitive(state q_i, state q_f, position pos_f, float cost, pos_vec_t swath, position pos_min, position pos_max)
+MotionPrimitive::MotionPrimitive(RobotState q_i, RobotState q_f, RobotPosition pos_f, float cost, RobotPosition_Vector swath, RobotPosition pos_min, RobotPosition pos_max)
 {
   this->q_i = q_i;
   this->q_f = q_f;
@@ -11,41 +20,41 @@ Primitive::Primitive(state q_i, state q_f, position pos_f, float cost, pos_vec_t
   this->pos_max = pos_max;
 }
 
-state Primitive::get_q_i()
+RobotState MotionPrimitive::get_q_i()
 {
   return q_i;
 }
 
-state Primitive::get_q_f()
+RobotState MotionPrimitive::get_q_f()
 {
   return q_f;
 }
 
-position Primitive::get_pos_f()
+RobotPosition MotionPrimitive::get_pos_f()
 {
   return pos_f;
 }
 
-float Primitive::get_cost()
+float MotionPrimitive::get_cost()
 {
   return cost;
 }
 
-pos_vec_t Primitive::get_swath()
+RobotPosition_Vector MotionPrimitive::get_swath()
 {
   return swath;
 }
 
-position Primitive::get_pos_min()
+RobotPosition MotionPrimitive::get_pos_min()
 {
   return pos_min;
 }
 
-position Primitive::get_pos_max()
+RobotPosition MotionPrimitive::get_pos_max()
 {
   return pos_max;
 }
 
-Primitive::~Primitive()
+MotionPrimitive::~MotionPrimitive()
 {
 }

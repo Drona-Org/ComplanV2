@@ -1,3 +1,11 @@
+/*
+File: GenerateTrajectory.cpp
+Authors:
+Indranil Saha (isaha@cse.iitk.ac.in)
+Ankush Desai(ankush@eecs.berkeley.edu)
+
+This file is used for generating the trajectory, as a sequence of the motion primitives.
+*/
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -6,48 +14,51 @@
 #include "InputParser.h"
 #include "GenerateConstraints.h"
 #include "Z3OutputParser.h"
+#ifdef PLAT_WINDOWS
+#include <Windows.h>
+#endif
 
 using namespace std;
 
 const unsigned int max_traj_length = 30;
 
 
-void generateZ3File(prim_vec_t primitives, int length_x, int length_y, pos_vec_t obstacles, position pos_start, position pos_end, int number_of_points, float total_cost)
+void GenerateZ3File(MotionPrimitive_Vector primitives, int length_x, int length_y, RobotPosition_Vector obstacles, RobotPosition pos_start, RobotPosition pos_end, int number_of_points, float total_cost)
 {
   ofstream ofp;
 
   ofp.open("constraints.smt2");
 
   /* Declare the variables */
-  declareVariables(ofp, number_of_points);
+  GenerateVariableDeclarations(ofp, number_of_points);
 
 
   /* Write the General Constraints */
-  writeInitialLocationConstraints(ofp, pos_start);
+  GenerateInitialLocationConstraints(ofp, pos_start);
   ofp << endl;
 
-  writeObstacleConstraints(ofp, length_x, length_y, obstacles);
+  GenerateObstacleConstraints(ofp, length_x, length_y, obstacles);
   ofp << endl;
 
-  writeTransitionConstraints(ofp, primitives, length_x, length_y, obstacles, number_of_points);
+  GenerateTransitionConstraints(ofp, primitives, length_x, length_y, obstacles, number_of_points);
   ofp << endl;
 
-  writeCostConstraint(ofp, number_of_points, total_cost);
+  GenerateCostConstraint(ofp, number_of_points, total_cost);
   ofp << endl;
 
   /* Write the specification constraints */
-  writeFinalDestinationConstraints(ofp, pos_end, number_of_points);
+  GenerateFinalDestinationConstraints(ofp, pos_end, number_of_points);
 
   /* Check the satisfiability of the constraints and output the model */
   ofp << "(check-sat)" << endl;
   //ofp << "(get-model)" << endl;
-  writeOutputConstraints(ofp, number_of_points);
+  GenerateOutputConstraints(ofp, number_of_points);
 
   ofp.close();
 }
 
 
-int generateTrajectory(prim_vec_t primitives, prim_cost_t prim_cost, int length_x, int length_y, pos_vec_t obstacles, position pos_start, position pos_end)
+bool GenerateTrajectory(MotionPrimitive_Vector primitives, MotionPrimitive_Cost prim_cost, int length_x, int length_y, RobotPosition_Vector obstacles, RobotPosition pos_start, RobotPosition pos_end, int* trajectory_length)
 {
   ifstream ifp;
   string line;
@@ -56,10 +67,10 @@ int generateTrajectory(prim_vec_t primitives, prim_cost_t prim_cost, int length_
   ofstream ofp;
 
   count = 2;
-  while (1)
+  while (true)
   {
     cost = count * prim_cost.max_cost;
-    generateZ3File(primitives, length_x, length_y, obstacles, pos_start, pos_end, count, cost);
+    GenerateZ3File(primitives, length_x, length_y, obstacles, pos_start, pos_end, count, cost);
     system("z3 constraints.smt2 > z3_output");
 
     ifp.open("z3_output");
@@ -73,34 +84,47 @@ int generateTrajectory(prim_vec_t primitives, prim_cost_t prim_cost, int length_
       count = count + 1;
       if (count > max_traj_length)
       {
-        cout << "Trajectory does not exist.." << endl;
-        exit(0);
+        cout << "Complan Error: Trajectory does not exist.." << endl;
+        return false;
       }
     }
     else if (line == "sat")
     {
-      system("cp z3_output z3_output_sat");
+      
+#ifdef PLAT_WINDOWS
+	  CopyFile(L"z3_output", L"z3_output_sat", FALSE);
+#else
+		system("cp z3_output z3_output_sat");
+#endif
       break;
     }
     else
     {
-      cout << "unknown output from z3.." << endl;
+      cout << "Complan Error : unknown output from z3.." << endl;
       count = count + 1;
       if (count > max_traj_length)
       {
-        exit(0);
+        return false;
       }
     }
     if (count > max_traj_length)
       break;
   }
   system("perl processoutputfile.pl");
+
+#ifdef PLAT_WINDOWS
+  MoveFile(L"planner_output", L"plan_noopt");
+#else
   system("mv planner_output plan_noopt");
-  return count;
+#endif
+
+  *trajectory_length = count;
+
+  return true;
 }
 
 
-void optimizeTrajectory(prim_vec_t primitives, prim_cost_t prim_cost, int length_x, int length_y, pos_vec_t obstacles, position pos_start, position pos_end, int trajectory_length)
+void OptimizeTrajectory(MotionPrimitive_Vector primitives, MotionPrimitive_Cost prim_cost, int length_x, int length_y, RobotPosition_Vector obstacles, RobotPosition pos_start, RobotPosition pos_end, int trajectory_length)
 {
   float max_total_cost, min_total_cost, current_cost;
   ifstream ifp;
@@ -111,10 +135,15 @@ void optimizeTrajectory(prim_vec_t primitives, prim_cost_t prim_cost, int length
   min_total_cost = trajectory_length * prim_cost.min_cost;
   current_cost = (max_total_cost + min_total_cost) / 2;
 
+#ifdef PLAT_WINDOWS
+  MoveFile(L"z3_output", L"z3_output_sat");
+#else
   system("mv z3_output z3_output_sat");
+#endif
+
   while (max_total_cost - min_total_cost > prim_cost.min_cost_diff)
   {
-    generateZ3File(primitives, length_x, length_y, obstacles, pos_start, pos_end, trajectory_length, current_cost);
+    GenerateZ3File(primitives, length_x, length_y, obstacles, pos_start, pos_end, trajectory_length, current_cost);
     system("z3 constraints.smt2 > z3_output");
 
     ifp.open("z3_output");
@@ -127,9 +156,14 @@ void optimizeTrajectory(prim_vec_t primitives, prim_cost_t prim_cost, int length
     }
     else if (line == "sat")
     {
-      //max_total_cost = extractTrajectoryCostInformation();
+      //max_total_cost = ExtractTrajectoryCostInformation();
       max_total_cost = current_cost;
-      system("mv z3_output z3_output_sat");
+#ifdef PLAT_WINDOWS
+	  MoveFile(L"z3_output", L"z3_output_sat");
+#else
+	  system("mv z3_output z3_output_sat");
+#endif
+      
     }
     else
     {
@@ -142,9 +176,19 @@ void optimizeTrajectory(prim_vec_t primitives, prim_cost_t prim_cost, int length
     //cout << "current cost = " << current_cost << endl;
   }
 
+#ifdef PLAT_WINDOWS
+  MoveFile(L"z3_output_sat", L"z3_output");
+#else
   system("mv z3_output_sat z3_output");
+#endif
+
   system("perl processoutputfile.pl");
+
+#ifdef PLAT_WINDOWS
+  MoveFile(L"planner_output", L"plan_opt");
+#else
   system("mv planner_output plan_opt");
-  //cout << "Cost  = " << extractTrajectoryCostInformation() << endl << endl;
+#endif
+  //cout << "Cost  = " << ExtractTrajectoryCostInformation() << endl << endl;
 }
 

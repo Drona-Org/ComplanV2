@@ -1,3 +1,12 @@
+/*
+File: GenerateConstraints.cpp
+Authors:
+Indranil Saha (isaha@cse.iitk.ac.in)
+Ankush Desai(ankush@eecs.berkeley.edu)
+
+This file is used for generating Z3 constraints.
+*/
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -7,7 +16,7 @@
 #include "GenerateConstraints.h"
 
 
-void declareVariables(ofstream &ofp, int number_of_points)
+void GenerateVariableDeclarations(ofstream &ofp, int number_of_points)
 {
   int count;
 
@@ -67,7 +76,7 @@ void declareVariables(ofstream &ofp, int number_of_points)
 }
 
 
-void writeInitialLocationConstraints(ofstream &ofp, position pos_start)
+void GenerateInitialLocationConstraints(ofstream &ofp, RobotPosition pos_start)
 {
   ofp << "(assert (= x_1_1 " << pos_start.x << "))" << endl;
   ofp << "(assert (= y_1_1 " << pos_start.y << "))" << endl;
@@ -75,7 +84,7 @@ void writeInitialLocationConstraints(ofstream &ofp, position pos_start)
 }
 
 
-void writeFinalDestinationConstraints(ofstream &ofp, position pos_end, int number_of_points)
+void GenerateFinalDestinationConstraints(ofstream &ofp, RobotPosition pos_end, int number_of_points)
 {
   ofp << "(assert (= x_1_" << number_of_points << " " << pos_end.x << "))" << endl;
   ofp << "(assert (= y_1_" << number_of_points << " " << pos_end.y << "))" << endl;
@@ -83,7 +92,7 @@ void writeFinalDestinationConstraints(ofstream &ofp, position pos_end, int numbe
 }
 
 
-void writeObstacleConstraints(ofstream &ofp, int length_x, int length_y,  pos_vec_t obstacles)
+void GenerateObstacleConstraints(ofstream &ofp, int length_x, int length_y, RobotPosition_Vector obstacles)
 {
   int count, count1, count2;
 
@@ -113,11 +122,11 @@ void writeObstacleConstraints(ofstream &ofp, int length_x, int length_y,  pos_ve
 }
 
 
-void writeTransitionConstraints(ofstream &ofp, prim_vec_t primitives, int length_x, int length_y, pos_vec_t obstacles, int number_of_points)
+void GenerateTransitionConstraints(ofstream &ofp, MotionPrimitive_Vector primitives, int length_x, int length_y, RobotPosition_Vector obstacles, int number_of_points)
 {
-  state q_i, q_f;
-  position pos_f;
-  pos_vec_t swath, swath1, swath2;
+  RobotState q_i, q_f;
+  RobotPosition pos_f;
+  RobotPosition_Vector swath, swath1, swath2;
   float cost;
   int count, count1, count2;
 
@@ -169,7 +178,7 @@ void writeTransitionConstraints(ofstream &ofp, prim_vec_t primitives, int length
       ofp << "     (= vel_f_1_" << count + 1 << " " << q_f.velocity << ")" << endl;
       ofp << "     (= x_f_1_" << count + 1 << " " << pos_f.x << ")" << endl;
       ofp << "     (= y_f_1_" << count + 1 << " " << pos_f.y << ")" << endl;
-      ofp << "     (= cost_1_" << count + 1 << " " << floatToReal(cost) << ")" << endl;
+      ofp << "     (= cost_1_" << count + 1 << " " << FloatToReal(cost) << ")" << endl;
       for (count2 = 0; count2 < swath.size(); count2++)
       {
         ofp << "     (= (obstacle (+ x_1_" << count + 1 << " " << swath[count2].x << ") (+ y_1_" << count + 1 << " " << swath[count2].y << ")) false)" << endl;
@@ -195,7 +204,7 @@ void writeTransitionConstraints(ofstream &ofp, prim_vec_t primitives, int length
 }
 
 
-void writeCostConstraint(ofstream &ofp, int number_of_points, float total_cost)
+void GenerateCostConstraint(ofstream &ofp, int number_of_points, float total_cost)
 {
   unsigned int count;
 
@@ -205,12 +214,12 @@ void writeCostConstraint(ofstream &ofp, int number_of_points, float total_cost)
     ofp << " cost_1_" << count + 1;
   }
   ofp << ")))" << endl;
-  ofp << "(assert (<= total_cost " << floatToReal(total_cost) << "))" << endl;
+  ofp << "(assert (<= total_cost " << FloatToReal(total_cost) << "))" << endl;
   ofp << endl;
 }
 
 
-void writeOutputConstraints(ofstream &ofp, int number_of_points)
+void GenerateOutputConstraints(ofstream &ofp, int number_of_points)
 {
   int count;
 
@@ -265,7 +274,7 @@ void writeOutputConstraints(ofstream &ofp, int number_of_points)
 }
 
 
-string floatToReal(float flf)
+string FloatToReal(float flf)
 {
   string str1, str2;
   long int num, den;
@@ -286,14 +295,14 @@ string floatToReal(float flf)
     length = fls.length();
     den = pow(10, (length - pos));
     num = flf * den;
-    str1 = tostr(num);
-    str2 = tostr(den);
+	str1 = ToSTR(num);
+	str2 = ToSTR(den);
     return ("(/ " + str1 + " " + str2 + ")");
   }
 }
 
 
-template <typename T> string tostr(const T& t) 
+template <typename T> string ToSTR(const T& t)
 { 
   ostringstream os; 
   os << t; 

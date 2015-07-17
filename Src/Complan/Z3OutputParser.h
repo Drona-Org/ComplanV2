@@ -1,4 +1,4 @@
-float extractTrajectoryCostInformation();
-void extractTrajectoryVelocityInformation(string , vector< vector<int> > & );
-void extractTrajectoryPositionXInformation(string , vector< vector<int> > &);
-void extractTrajectoryPositionYInformation(string , vector< vector<int> > &);
+float ExtractTrajectoryCostInformation();
+void ExtractTrajectoryVelocityInformation(string , vector< vector<int> > & );
+bool ExtractTrajectoryRobotPositionXInformation(string , vector< vector<int> > &);
+bool ExtractTrajectoryRobotPositionYInformation(string , vector< vector<int> > &);

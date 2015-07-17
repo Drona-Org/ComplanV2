@@ -1,3 +1,12 @@
+/*
+File: InputParser.cpp
+Authors:
+Indranil Saha (isaha@cse.iitk.ac.in)
+Ankush Desai(ankush@eecs.berkeley.edu)
+
+This file is used for parsing the inputs to complan.
+*/
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -8,23 +17,23 @@
 #include "InputParser.h"
 using namespace std;
 
-void readPrimitives(prim_vec_t &primitives)
+void ReadMotionPrimitives(MotionPrimitive_Vector &primitives)
 {
   ifstream ifp;
 
   string line;
   string str;
   int location, location1, location2, location3;
-  position pos_tmp;
+  RobotPosition pos_tmp;
   int xmin, ymin, xmax, ymax;
   
-  state q_i, q_f;
-  position pos_f;
+  RobotState q_i, q_f;
+  RobotPosition pos_f;
   string fls;
   float cost;
-  pos_vec_t swath;
-  position pos_min;
-  position pos_max;
+  RobotPosition_Vector swath;
+  RobotPosition pos_min;
+  RobotPosition pos_max;
 
   ifp.open("2d_template.txt");
 
@@ -104,7 +113,7 @@ void readPrimitives(prim_vec_t &primitives)
         pos_min.y = ymin;
         pos_max.x = xmax;
         pos_max.y = ymax;        
-        Primitive prim(q_i, q_f, pos_f, cost, swath, pos_min, pos_max);
+        MotionPrimitive prim(q_i, q_f, pos_f, cost, swath, pos_min, pos_max);
         primitives.push_back(prim); 
         swath.erase (swath.begin(), swath.end());
       }
@@ -114,17 +123,17 @@ void readPrimitives(prim_vec_t &primitives)
 }
 
 
-void writePrimitives(prim_vec_t primitives)
+void WriteMotionPrimitives(MotionPrimitive_Vector primitives)
 {
   unsigned int count1, count2;
-  state q_i, q_f;
-  position pos_f;
+  RobotState q_i, q_f;
+  RobotPosition pos_f;
   string cost;
-  pos_vec_t swath;
-  position pos_min;
-  position pos_max;
+  RobotPosition_Vector swath;
+  RobotPosition pos_min;
+  RobotPosition pos_max;
 
-  cout << endl << "PRIMITIVES:" << endl << endl;
+  //cout << endl << "PRIMITIVES:" << endl << endl;
   for(count1 = 0; count1 < primitives.size(); count1++)
   {
     cout << "Primitive " << count1 << endl;
@@ -160,7 +169,7 @@ void writePrimitives(prim_vec_t primitives)
 }
 
 
-void getPrimitiveCost(prim_vec_t primitives, prim_cost_t & prim_cost)
+void GetMotionPrimitiveCost(MotionPrimitive_Vector primitives, MotionPrimitive_Cost & prim_cost)
 {
   unsigned int count1, count2;
   float str1, str2;
@@ -187,7 +196,7 @@ void getPrimitiveCost(prim_vec_t primitives, prim_cost_t & prim_cost)
 }
 
 
-void writePrimitiveCost(prim_cost_t prim_cost)
+void WriteMotionPrimitiveCost(MotionPrimitive_Cost prim_cost)
 {
   cout << endl << "PRIMITIVE COST INFORMATION:" << endl << endl;
   cout << "prim_max_cost = " << prim_cost.max_cost << endl;
@@ -196,7 +205,7 @@ void writePrimitiveCost(prim_cost_t prim_cost)
 }
 
 
-void readDimension(dimension_t &dimension)
+void ReadDimension(Dimension &dimension)
 {
   ifstream ifp;
   string line;
@@ -218,7 +227,7 @@ void readDimension(dimension_t &dimension)
 }
 
 
-void writeDimension(dimension_t dimension)
+void WriteDimension(Dimension dimension)
 {
   cout << endl << "DIMENSION:" << endl << endl;
   cout << dimension.length_x << endl;
@@ -227,7 +236,7 @@ void writeDimension(dimension_t dimension)
 }
 
 
-void findLocation(dimension_t dimension, int id, int &x, int &y)
+void FindLocation(Dimension dimension, int id, int &x, int &y)
 {
   x = (id - 1) / dimension.length_x;
   y = (id - 1) % dimension.length_x;
@@ -238,7 +247,7 @@ void findLocation(dimension_t dimension, int id, int &x, int &y)
 }
 
 
-void findIndex(dimension_t dimension, int x, int y, int &id)
+void FindIndex(Dimension dimension, int x, int y, int &id)
 {
   if (x % 2 == 0 )
   {

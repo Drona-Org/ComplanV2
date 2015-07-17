@@ -1,45 +1,53 @@
+/*
+File: MotionPrimitives.h
+Authors:
+Indranil Saha (isaha@cse.iitk.ac.in)
+Ankush Desai(ankush@eecs.berkeley.edu)
+
+This file defines data types for storing the robot state, position and motion primitive information.
+*/
 #include <iostream>
 #include <vector>
 using namespace std;
 
 
-struct s1
+struct _RobotState
 {
   int velocity;
   //int configuration;
 };
 
-typedef struct s1 state;
+typedef struct _RobotState RobotState;
 
-struct s2
+struct _RobotPosition
 {
   int x;
   int y;
 };
 
-typedef struct s2 position;
+typedef struct _RobotPosition RobotPosition;
 
-typedef std::vector<position> pos_vec_t;
+typedef std::vector<RobotPosition> RobotPosition_Vector;
 
-class Primitive 
+class MotionPrimitive
 {
   private:
-    state q_i;
-    state q_f;
-    position pos_f;
+    RobotState q_i;
+    RobotState q_f;
+    RobotPosition pos_f;
     float cost;
-    pos_vec_t swath;    
-    position pos_min;
-    position pos_max;
+    RobotPosition_Vector swath;    
+    RobotPosition pos_min;
+    RobotPosition pos_max;
 
   public:
-    Primitive(state , state , position , float , pos_vec_t , position , position );
-    state get_q_i();
-    state get_q_f();
-    position get_pos_f();
+	  MotionPrimitive(RobotState, RobotState, RobotPosition, float, RobotPosition_Vector, RobotPosition, RobotPosition);
+    RobotState get_q_i();
+    RobotState get_q_f();
+    RobotPosition get_pos_f();
     float get_cost();
-    pos_vec_t get_swath();
-    position get_pos_min();
-    position get_pos_max();
-    ~Primitive();  
+    RobotPosition_Vector get_swath();
+    RobotPosition get_pos_min();
+    RobotPosition get_pos_max();
+	~MotionPrimitive();
 };
