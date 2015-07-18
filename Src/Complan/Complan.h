@@ -27,7 +27,7 @@ The grid locations are assinged integer values as follows for a 4x4 grid
 * @returns An instance of a primitive. Caller is responsible for freeing.
 * @see PrtFreeType
 */
-__declspec(dllexport)
+extern "C" __declspec(dllexport)
 bool GenerateMotionPlanFor(
 _In_ int startLocation, 		
 _In_ int endLocation,
