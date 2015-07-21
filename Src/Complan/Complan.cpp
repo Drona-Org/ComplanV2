@@ -17,7 +17,7 @@ using namespace std;
 
 
 
-bool GenerateMotionPlanFor(
+BOOLEAN GenerateMotionPlanFor(
 _In_ int startLocation,
 _In_ int endLocation,
 _In_ int* sequenceOfObstacles,

@@ -84,7 +84,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetExt>.dll</TargetExt>
     <OutDir>$(SolutionDir)$(Configuration)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)$(Configuration)\$(Platform)</IntDir>
+    <IntDir>$(Configuration)\$(Platform)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetExt>.dll</TargetExt>
