@@ -74,7 +74,8 @@ _Out_ int* stepsSize
 
   char filename[100];
   int index;
-  sprintf_s(filename, 100, "%s", "plan_opt");
+  //sprintf_s(filename, 100, "%s", "plan_opt");
+  sprintf_s(filename, 100, "%s", "z3_output");
   vector< vector<int> > X, Y;
   X.clear();
   result = ExtractTrajectoryRobotPositionXInformation(filename, X);
