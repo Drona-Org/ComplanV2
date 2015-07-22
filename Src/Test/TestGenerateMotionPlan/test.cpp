@@ -1,6 +1,5 @@
 #include <iostream>
 #include "..\..\Complan\Complan.h"
-#include <Windows.h>
 using namespace std;
 
 int main()
@@ -16,10 +15,6 @@ int main()
   {
 	  cout << output_seq_of_locations[count] << endl;
   }
-  /*DeleteFile("plan_opt");
-  DeleteFile("plan_noopt");
-  DeleteFile("z3_output");
-  DeleteFile("Constraints.smt2");*/
 
   GenerateMotionPlanFor(10, 4, obs, 0, output_seq_of_locations, &output_size);
   cout << "Trajectory Length = " << output_size << endl;

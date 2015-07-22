@@ -90,12 +90,7 @@ bool GenerateTrajectory(MotionPrimitive_Vector primitives, MotionPrimitive_Cost 
     }
     else if (line == "sat")
     {
-      
-#ifdef PLAT_WINDOWS
-	  CopyFile(L"z3_output", L"z3_output_sat", FALSE);
-#else
-		system("cp z3_output z3_output_sat");
-#endif
+	  system("cp z3_output z3_output_sat");
       break;
     }
     else
@@ -112,11 +107,9 @@ bool GenerateTrajectory(MotionPrimitive_Vector primitives, MotionPrimitive_Cost 
   }
   system("perl processoutputfile.pl");
 
-#ifdef PLAT_WINDOWS
-  MoveFile(L"planner_output", L"plan_noopt");
-#else
+
   system("mv planner_output plan_noopt");
-#endif
+
 
   *trajectory_length = count;
 
@@ -134,12 +127,7 @@ void OptimizeTrajectory(MotionPrimitive_Vector primitives, MotionPrimitive_Cost 
   max_total_cost = trajectory_length * prim_cost.max_cost;
   min_total_cost = trajectory_length * prim_cost.min_cost;
   current_cost = (max_total_cost + min_total_cost) / 2;
-
-#ifdef PLAT_WINDOWS
-  MoveFile(L"z3_output", L"z3_output_sat");
-#else
   system("mv z3_output z3_output_sat");
-#endif
 
   while (max_total_cost - min_total_cost > prim_cost.min_cost_diff)
   {
@@ -158,11 +146,8 @@ void OptimizeTrajectory(MotionPrimitive_Vector primitives, MotionPrimitive_Cost 
     {
       //max_total_cost = ExtractTrajectoryCostInformation();
       max_total_cost = current_cost;
-#ifdef PLAT_WINDOWS
-	  MoveFile(L"z3_output", L"z3_output_sat");
-#else
 	  system("mv z3_output z3_output_sat");
-#endif
+
       
     }
     else
@@ -176,19 +161,12 @@ void OptimizeTrajectory(MotionPrimitive_Vector primitives, MotionPrimitive_Cost 
     //cout << "current cost = " << current_cost << endl;
   }
 
-#ifdef PLAT_WINDOWS
-  MoveFile(L"z3_output_sat", L"z3_output");
-#else
   system("mv z3_output_sat z3_output");
-#endif
 
   system("perl processoutputfile.pl");
 
-#ifdef PLAT_WINDOWS
-  MoveFile(L"planner_output", L"plan_opt");
-#else
   system("mv planner_output plan_opt");
-#endif
+
   //cout << "Cost  = " << ExtractTrajectoryCostInformation() << endl << endl;
 }
 

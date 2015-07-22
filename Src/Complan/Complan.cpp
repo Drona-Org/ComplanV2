@@ -17,7 +17,7 @@ using namespace std;
 
 
 
-bool GenerateMotionPlanFor(
+BOOLEAN GenerateMotionPlanFor(
 _In_ int startLocation,
 _In_ int endLocation,
 _In_ int* sequenceOfObstacles,
@@ -104,5 +104,12 @@ _Out_ int* stepsSize
     }
   }
 
+#ifdef PLAT_WINDOWS
+  //perform clean-up
+  DeleteFile(L"plan_opt");
+  DeleteFile(L"plan_noopt");
+  DeleteFile(L"z3_output");
+  DeleteFile(L"Constraints.smt2");
+#endif
   return true;
 }
