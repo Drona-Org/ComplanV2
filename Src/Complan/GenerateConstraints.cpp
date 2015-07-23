@@ -98,6 +98,7 @@ void GenerateObstacleConstraints(ofstream &ofp, int length_x, int length_y, Robo
 
   bool workspace_obstacles[MAX_SIZE_OF_WORKSPACE][MAX_SIZE_OF_WORKSPACE];
 
+
   for (count1 = 0; count1 <= length_x; count1++)
   {
     for (count2 = 0; count2 <= length_y; count2++)
@@ -105,7 +106,7 @@ void GenerateObstacleConstraints(ofstream &ofp, int length_x, int length_y, Robo
       workspace_obstacles[count1][count2] = false;
     }
   }
-  
+
   for (count = 0; count < obstacles.size(); count++)
   {
     workspace_obstacles[obstacles[count].x][obstacles[count].y] = true;

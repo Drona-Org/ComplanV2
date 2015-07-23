@@ -238,8 +238,12 @@ void WriteDimension(Dimension dimension)
 
 void FindLocation(Dimension dimension, int id, int &x, int &y)
 {
+  //cout << "dimx = " << dimension.length_x << endl;
+  //cout << "dimy = " << dimension.length_y << endl;
+  //cout << "id = " << id << endl;
   x = (id - 1) / dimension.length_x;
   y = (id - 1) % dimension.length_x;
+  //cout << "x = " << x << " " << "y = " << y << endl;
   if (((id - 1) / dimension.length_x) %2 == 1)
   {
     y = dimension.length_y - y - 1;

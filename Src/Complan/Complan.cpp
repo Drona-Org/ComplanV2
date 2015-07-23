@@ -12,11 +12,14 @@
 #include "GenerateTrajectory.h"
 #include "Z3OutputParser.h"
 #include "Complan.h"
+#ifdef PLAT_WINDOWS
+#include <Windows.h>
+#endif
+
 
 using namespace std;
 
-
-
+#ifdef PLAT_WINDOWS
 bool GenerateMotionPlanFor(
 _In_ int startLocation,
 _In_ int endLocation,
@@ -25,6 +28,16 @@ _In_ int obsSize,
 _Out_ int sequenceOfSteps[100],
 _Out_ int* stepsSize
 )
+#else
+bool GenerateMotionPlanFor(
+int startLocation,
+int endLocation,
+int* sequenceOfObstacles,
+int obsSize,
+int sequenceOfSteps[100],
+int* stepsSize
+)
+#endif
 {
   MotionPrimitive_Vector primitives;
   Dimension dimension;
@@ -57,7 +70,8 @@ _Out_ int* stepsSize
 
   for (count = 0; count < obsSize; count++)
   {
-	  FindLocation(dimension, sequenceOfObstacles[count], x, y);
+    FindLocation(dimension, sequenceOfObstacles[count], x, y);
+    cout << "x = " << x << " " << "y = " << y << endl;
     pos_obs.x = x;
     pos_obs.y = y;
     obstacles.push_back(pos_obs);
@@ -67,25 +81,23 @@ _Out_ int* stepsSize
   result = GenerateTrajectory(primitives, prim_cost, dimension.length_x, dimension.length_y, obstacles, pos_start, pos_end, &trajectory_length);
   
   if (!result)
-	  return result;
+    return result;
 
   OptimizeTrajectory(primitives, prim_cost, dimension.length_x, dimension.length_y, obstacles, pos_start, pos_end, trajectory_length);
 
 
-  char filename[100];
   int index;
-  //sprintf_s(filename, 100, "%s", "plan_opt");
-  sprintf_s(filename, 100, "%s", "z3_output");
   vector< vector<int> > X, Y;
+  
   X.clear();
-  result = ExtractTrajectoryRobotPositionXInformation(filename, X);
+  result = ExtractTrajectoryRobotPositionXInformation(X);
   if (!result)
-	  return result;
+    return result;
   Y.clear();
 
-  result = ExtractTrajectoryRobotPositionYInformation(filename, Y);
+  result = ExtractTrajectoryRobotPositionYInformation(Y);
   if (!result)
-	  return result;
+    return result;
 
   if (X.size() != Y.size())
   {
@@ -94,7 +106,7 @@ _Out_ int* stepsSize
   }
   else
   {
-	 *stepsSize = (X[0]).size();
+    *stepsSize = (X[0]).size();
     //output_seq_of_locations[output_size];
     for (count = 0; count < *stepsSize; count++)
     {

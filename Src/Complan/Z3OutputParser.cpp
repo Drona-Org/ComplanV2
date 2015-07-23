@@ -25,7 +25,7 @@ double ExtractTrajectoryCostInformation()
   {
     while (getline(ifp, line))
     {
-      line = line.substr(2, strlen(line.c_str()) - 3);
+      line = line.substr(2, strlen(line.c_str()) - 4);
       location = line.find(' ');
       if (location != -1)
       {
@@ -48,7 +48,7 @@ double ExtractTrajectoryCostInformation()
 }
 
 
-void ExtractTrajectoryVelocityInformation(string filename, vector< vector<int> > & velocities)
+void ExtractTrajectoryVelocityInformation(vector< vector<int> > & velocities)
 {
   ifstream ifp;
   int location;
@@ -59,7 +59,8 @@ void ExtractTrajectoryVelocityInformation(string filename, vector< vector<int> >
   int robot, time;
 
   //cout << filename << endl;
-  ifp.open(filename.c_str());
+  //ifp.open(filename.c_str());
+  ifp.open("z3_output");
   if (ifp.is_open())
   {
     while (getline(ifp, line))
@@ -76,12 +77,12 @@ void ExtractTrajectoryVelocityInformation(string filename, vector< vector<int> >
           location = index.find('_');
           if (location != -1)
           {
+            istringstream (index.substr(0, location)) >> robot;
+            istringstream (index.substr(location + 1)) >> time;
             //cout << "line=" << line << "--" << endl; 
             //cout << "var=" << var << "--" << endl; 
             //cout << "value=" << value << endl;
             //cout << "index=" << index << "--" << endl;
-            istringstream (index.substr(0, location)) >> robot;
-            istringstream (index.substr(location + 1)) >> time;
             //cout << "robot=" << robot << endl;
             //cout << "time=" << time << endl;
             if (robot > velocities.size())
@@ -92,15 +93,10 @@ void ExtractTrajectoryVelocityInformation(string filename, vector< vector<int> >
           }
           else
           {
-            cout << "parsing error 3.." << endl;
+            cout << "Complan error: parsing error on vel.." << endl;
             exit(0);
           }
         }
-      }
-      else
-      {
-        cout << "parsing error 1.." << endl;
-        exit(0);
       }
     }
   }
@@ -108,7 +104,7 @@ void ExtractTrajectoryVelocityInformation(string filename, vector< vector<int> >
 }
 
 
-bool ExtractTrajectoryRobotPositionXInformation(string filename, vector< vector<int> > &X)
+bool ExtractTrajectoryRobotPositionXInformation(vector< vector<int> > &X)
 {
   ifstream ifp;
   int location;
@@ -119,11 +115,15 @@ bool ExtractTrajectoryRobotPositionXInformation(string filename, vector< vector<
   int robot, time;
 
   //cout << filename << endl;
-  ifp.open(filename.c_str());
+  //ifp.open(filename.c_str());
+  ifp.open("z3_output");
   if (ifp.is_open())
   {
     while (getline(ifp, line))
     {
+      //cout << line << endl;
+      line = line.substr(2, strlen(line.c_str()) - 4);
+      //cout << line << endl;
       location = line.find(' ');
       if (location != -1)
       {
@@ -133,34 +133,33 @@ bool ExtractTrajectoryRobotPositionXInformation(string filename, vector< vector<
         if (location != -1)
         {
           index = var.substr(location + 2);
-          location = index.find('_');
-          if (location != -1)
+          location = index.find("f_");
+          if (location == -1)
           {
-            //cout << "line=" << line << "--" << endl;
-            //cout << "var=" << var << "--" << endl;
-            //cout << "value=" << value << endl;
-            //cout << "index=" << index << "--" << endl;
-            istringstream (index.substr(0, location)) >> robot;
-            istringstream (index.substr(location + 1)) >> time;
-            //cout << "robot=" << robot << endl;
-            //cout << "time=" << time << endl;
-            if (robot > X.size())
+            location = index.find('_');
+            if (location != -1)
             {
-              X.resize(robot);
+              istringstream (index.substr(0, location)) >> robot;
+              istringstream (index.substr(location + 1)) >> time;
+              //cout << "line=" << line << "--" << endl;
+              //cout << "var=" << var << "--" << endl;
+              //cout << "value=" << value << endl;
+              //cout << "index=" << index << "--" << endl;
+              //cout << "robot=" << robot << endl;
+              //cout << "time=" << time << endl;
+              if (robot > X.size())
+              {
+                X.resize(robot);
+              }
+              X[robot - 1].push_back(value);
             }
-            X[robot - 1].push_back(value);
-          }
-          else
-          {
-            cout << "Complan Error : parsing error 3.." << endl;
-			return false;
+            else
+            {
+              cout << "Complan Error : parsing error on X.." << endl;
+	      return false;
+            }
           }
         }
-      }
-      else
-      {
-        cout << "Complan Error: parsing error 1.." << endl;
-		return false;
       }
     }
   }
@@ -169,7 +168,7 @@ bool ExtractTrajectoryRobotPositionXInformation(string filename, vector< vector<
 }
 
 
-bool ExtractTrajectoryRobotPositionYInformation(string filename, vector< vector<int> > &Y)
+bool ExtractTrajectoryRobotPositionYInformation(vector< vector<int> > &Y)
 {
   ifstream ifp;
   int location;
@@ -180,11 +179,13 @@ bool ExtractTrajectoryRobotPositionYInformation(string filename, vector< vector<
   int robot, time;
 
   //cout << filename << endl;
-  ifp.open(filename.c_str());
+  //ifp.open(filename.c_str());
+  ifp.open("z3_output");
   if (ifp.is_open())
   {
     while (getline(ifp, line))
     {
+      line = line.substr(2, strlen(line.c_str()) - 4);
       location = line.find(' ');
       if (location != -1)
       {
@@ -194,39 +195,36 @@ bool ExtractTrajectoryRobotPositionYInformation(string filename, vector< vector<
         if (location != -1)
         {
           index = var.substr(location + 2);
-          location = index.find('_');
-          if (location != -1)
+          location = index.find("f_");
+          if (location == -1)
           {
-            //cout << "line=" << line << "--" << endl;
-            //cout << "var=" << var << "--" << endl;
-            //cout << "value=" << value << endl;
-            //cout << "index=" << index << "--" << endl;
-            istringstream (index.substr(0, location)) >> robot;
-            istringstream (index.substr(location + 1)) >> time;
-            //cout << "robot=" << robot << endl;
-            //cout << "time=" << time << endl;
-            if (robot > Y.size())
+            location = index.find('_');
+            if (location != -1)
             {
-              Y.resize(robot);
+              istringstream (index.substr(0, location)) >> robot;
+              istringstream (index.substr(location + 1)) >> time;
+              //cout << "line=" << line << "--" << endl;
+              //cout << "var=" << var << "--" << endl;
+              //cout << "value=" << value << endl;
+              //cout << "index=" << index << "--" << endl;
+              //cout << "robot=" << robot << endl;
+              //cout << "time=" << time << endl;
+              if (robot > Y.size())
+              {
+                Y.resize(robot);
+              }
+              Y[robot - 1].push_back(value);
             }
-            Y[robot - 1].push_back(value);
-          }
-          else
-          {
-            cout << "Complan error : parsing error 3.." << endl;
-			return false;
+            else
+            {
+              cout << "Complan error : parsing error on Y.." << endl;
+	      return false;
+            }
           }
         }
-      }
-      else
-      {
-        cout << "Complan Error: parsing error 1.." << endl;
-		return false;
       }
     }
   }
   ifp.close();
   return true;
 }
-
-

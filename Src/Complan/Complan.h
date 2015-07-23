@@ -7,7 +7,7 @@ Ankush Desai(ankush@eecs.berkeley.edu)
 The grid locations are assinged integer values as follows for a 4x4 grid
 
 --------------------
-4 | 5 | 12	| 13   |
+4 | 5 | 12   | 13 |
 --------------------
 3  | 6  | 11  |14 |
 --------------------
@@ -27,7 +27,8 @@ The grid locations are assinged integer values as follows for a 4x4 grid
 * @returns An instance of a primitive. Caller is responsible for freeing.
 * @see PrtFreeType
 */
-extern "C" __declspec(dllexport)
+
+#ifdef PLAT_WINDOWS
 bool GenerateMotionPlanFor(
 _In_ int startLocation, 		
 _In_ int endLocation,
@@ -36,5 +37,14 @@ _In_ int obsSize,
 _Out_ int sequenceOfSteps[100],
 _Out_ int* stepsSize   	
 );
-
-
+extern "C" __declspec(dllexport)
+#else
+bool GenerateMotionPlanFor(
+int startLocation,
+int endLocation,
+int* sequenceOfObstacles,
+int obsSize,
+int sequenceOfSteps[100],
+int* stepsSize
+);
+#endif
