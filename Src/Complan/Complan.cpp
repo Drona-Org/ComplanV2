@@ -19,8 +19,12 @@
 
 using namespace std;
 
+<<<<<<< HEAD
 #ifdef PLAT_WINDOWS
 bool GenerateMotionPlanFor(
+=======
+BOOLEAN GenerateMotionPlanFor(
+>>>>>>> ea585743d2fac1166d503e12008083ff5549bc30
 _In_ int startLocation,
 _In_ int endLocation,
 _In_ int* sequenceOfObstacles,
@@ -87,6 +91,10 @@ int* stepsSize
 
 
   int index;
+<<<<<<< HEAD
+=======
+  sprintf_s(filename, 100, "%s", "plan_opt");
+>>>>>>> ea585743d2fac1166d503e12008083ff5549bc30
   vector< vector<int> > X, Y;
   
   X.clear();
@@ -117,5 +125,12 @@ int* stepsSize
     }
   }
 
+#ifdef PLAT_WINDOWS
+  //perform clean-up
+  DeleteFile(L"plan_opt");
+  DeleteFile(L"plan_noopt");
+  DeleteFile(L"z3_output");
+  DeleteFile(L"Constraints.smt2");
+#endif
   return true;
 }
