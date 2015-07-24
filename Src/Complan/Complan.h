@@ -27,22 +27,20 @@ The grid locations are assinged integer values as follows for a 4x4 grid
 * @returns An instance of a primitive. Caller is responsible for freeing.
 * @see PrtFreeType
 */
-<<<<<<< HEAD
 
-#ifdef PLAT_WINDOWS
-bool GenerateMotionPlanFor(
-=======
 #ifdef PLAT_WINDOWS
 #include <Windows.h>
 #endif
 
+/*
 #ifdef __cplusplus
 extern "C"{
 #define BOOLEAN bool
 #endif
-__declspec(dllexport)
+*/
+
+#ifdef PLAT_WINDOWS
 BOOLEAN GenerateMotionPlanFor(
->>>>>>> ea585743d2fac1166d503e12008083ff5549bc30
 _In_ int startLocation, 		
 _In_ int endLocation,
 _In_ int* sequenceOfObstacles,
@@ -50,7 +48,6 @@ _In_ int obsSize,
 _Out_ int sequenceOfSteps[100],
 _Out_ int* stepsSize   	
 );
-<<<<<<< HEAD
 extern "C" __declspec(dllexport)
 #else
 bool GenerateMotionPlanFor(
@@ -61,9 +58,4 @@ int obsSize,
 int sequenceOfSteps[100],
 int* stepsSize
 );
-=======
-
-#ifdef __cplusplus
-}
->>>>>>> ea585743d2fac1166d503e12008083ff5549bc30
 #endif
