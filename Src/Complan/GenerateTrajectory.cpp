@@ -105,10 +105,9 @@ bool GenerateTrajectory(MotionPrimitive_Vector primitives, MotionPrimitive_Cost 
     if (count > max_traj_length)
       break;
   }
-  system("perl processoutputfile.pl");
-
-
-  system("mv planner_output plan_noopt");
+  
+  //system("perl processoutputfile.pl");
+  //system("mv planner_output plan_noopt");
 
 
   *trajectory_length = count;
@@ -163,9 +162,8 @@ void OptimizeTrajectory(MotionPrimitive_Vector primitives, MotionPrimitive_Cost 
 
   system("mv z3_output_sat z3_output");
 
-  system("perl processoutputfile.pl");
-
-  system("mv planner_output plan_opt");
+  //system("perl processoutputfile.pl");
+  //system("mv planner_output plan_opt");
 
   //cout << "Cost  = " << ExtractTrajectoryCostInformation() << endl << endl;
 }
