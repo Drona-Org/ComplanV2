@@ -1,5 +1,11 @@
 #include <iostream>
+
+#ifdef PLAT_WINDOWS
 #include "..\..\Complan\Complan.h"
+#else
+#include "../../Complan/Complan.h"
+#endif
+
 using namespace std;
 
 int main()
