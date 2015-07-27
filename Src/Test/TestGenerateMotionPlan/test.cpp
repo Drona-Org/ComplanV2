@@ -59,7 +59,7 @@ int main()
   {
     cout << output_seq_of_locations[count] << endl;
   }
-  //getchar();
+  getchar();
   return 0;
 }
 

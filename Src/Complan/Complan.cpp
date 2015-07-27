@@ -12,9 +12,6 @@
 #include "GenerateTrajectory.h"
 #include "Z3OutputParser.h"
 #include "Complan.h"
-#ifdef PLAT_WINDOWS
-#include <Windows.h>
-#endif
 
 
 using namespace std;

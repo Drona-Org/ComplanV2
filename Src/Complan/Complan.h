@@ -33,22 +33,26 @@ The grid locations are assinged integer values as follows for a 4x4 grid
 #endif
 
 /*
+
+*/
+
+#ifdef PLAT_WINDOWS
 #ifdef __cplusplus
 extern "C"{
 #define BOOLEAN bool
 #endif
-*/
-
-#ifdef PLAT_WINDOWS
+__declspec(dllexport)
 BOOLEAN GenerateMotionPlanFor(
-_In_ int startLocation, 		
+_In_ int startLocation,
 _In_ int endLocation,
 _In_ int* sequenceOfObstacles,
 _In_ int obsSize,
 _Out_ int sequenceOfSteps[100],
-_Out_ int* stepsSize   	
+_Out_ int* stepsSize
 );
-extern "C" __declspec(dllexport)
+#ifdef __cplusplus
+}
+#endif
 #else
 bool GenerateMotionPlanFor(
 int startLocation,
