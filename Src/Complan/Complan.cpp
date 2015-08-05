@@ -68,7 +68,7 @@ int* stepsSize
   for (count = 0; count < obsSize; count++)
   {
     FindLocation(dimension, sequenceOfObstacles[count], x, y);
-    cout << "x = " << x << " " << "y = " << y << endl;
+    //cout << "x = " << x << " " << "y = " << y << endl;
     pos_obs.x = x;
     pos_obs.y = y;
     obstacles.push_back(pos_obs);
